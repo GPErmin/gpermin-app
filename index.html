@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Talk to GP Ermin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    body {
+      margin:0;
+      font-family: system-ui, sans-serif;
+      background:#111;
+      color:white;
+      display:flex;
+      flex-direction:column;
+      height:100vh;
+    }
+    header {
+      padding:16px;
+      font-weight:600;
+      background:#1a1a1a;
+      text-align:center;
+    }
+    #chat {
+      flex:1;
+      overflow:auto;
+      padding:16px;
+    }
+    .msg {
+      margin-bottom:12px;
+      padding:10px 14px;
+      border-radius:10px;
+      max-width:80%;
+    }
+    .user { background:#2a2a2a; margin-left:auto; }
+    .ai { background:#444; }
+    footer {
+      display:flex;
+      padding:10px;
+      background:#1a1a1a;
+    }
+    input {
+      flex:1;
+      padding:10px;
+      border-radius:8px;
+      border:none;
+      margin-right:8px;
+    }
+    button {
+      padding:10px 14px;
+      border:none;
+      border-radius:8px;
+      background:#00aaff;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>GP Ermin — Talk to the Author</header>
+
+<div id="chat"></div>
+
+<footer>
+  <input id="input" placeholder="Scrie ceva...">
+  <button onclick="send()">Trimite</button>
+</footer>
+
+<script>
+const chat = document.getElementById("chat");
+
+function addMessage(text, cls){
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.innerText = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function send(){
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  if(!text) return;
+
+  addMessage(text, "user");
+  input.value="";
+
+  fetch("/api/chat", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ message:text })
+  })
+  .then(r=>r.json())
+  .then(data=> addMessage(data.reply, "ai"))
+  .catch(()=> addMessage("Server error", "ai"));
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
