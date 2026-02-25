@@ -87,22 +87,14 @@ function send(){
   if(!text) return;
 
   addMessage(text, "user");
+
+  // raspuns fake simplu
+  setTimeout(()=>{
+    addMessage("Am primit: " + text, "ai");
+  }, 500);
+
   input.value="";
-
-  fetch("/api/chat", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ message:text })
-  })
-  .then(r=>r.json())
-  .then(data=> addMessage(data.reply, "ai"))
-  .catch(()=> addMessage("Server error", "ai"));
-}
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
 }
 </script>
-
 </body>
 </html>
