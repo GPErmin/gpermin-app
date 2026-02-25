@@ -113,10 +113,17 @@ function send(){
 
   addMessage(text, "user");
 
-  // raspuns fake simplu
-  setTimeout(()=>{
-    addMessage("Am primit: " + text, "ai");
-  }, 500);
+const replies = [
+  "Salut. Sunt GP Ermin.",
+  "Te ascult.",
+  "Spune.",
+  "Continuă."
+];
+
+setTimeout(() => {
+  const reply = replies[Math.floor(Math.random() * replies.length)];
+  addMessage(reply, "ai");
+}, 400 + Math.random() * 800);
 
   input.value="";
 }
